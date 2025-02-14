@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://kit.fontawesome.com/a1f039076a.js" crossorigin="anonymous"></script>
+  <title>MacGEX Quick Access</title>
+  <style>
+    .background {
+      background: url('background.jpg') no-repeat center center/cover;
+      width: 100%;
+      height: 100vh;
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .search {
+      margin-top: 20px;
+    }
+
+    .search input {
+      padding: 10px;
+      width: 300px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    .search button {
+      padding: 10px 20px;
+      margin-left: 5px;
+      border: none;
+      background-color: #333;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .search button:hover {
+      background-color: #444;
+    }
+
+    .bookmarks {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      margin: 30px 0;
+    }
+
+    .bookmark-name {
+      flex: 1;
+      cursor: pointer;
+    }
+
+    /* Modal Styles */
+    .modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: black;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      border-radius: 8px;
+      z-index: 1000;
+      display: none;
+    }
+
+    .modal-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .bookmark-item {
+      display: flex;
+      justify-content: space-between;
+      margin: 5px 0;
+    }
+
+    .bookmark-item button {
+      margin-left: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    .bookmark-item button:hover {
+      background-color: #0056b3;
+    }
+
+    .add-bookmark {
+      margin-top: 20px;
+    }
+
+    #manage-bookmarks-button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+
+    #manage-bookmarks-button:hover {
+      background-color: #218838;
+    }
+
+    .edit-button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      padding: 5px 10px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .edit-button:hover {
+      background-color: #0056b3;
+    }
+
+    /* .bookmark:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    } */
+
+    .weather-widget {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    .featured-games {
+      margin-top: 20px;
+    }
+
+    .game-button {
+      background-color: #333;
+      color: white;
+      padding: 15px 30px;
+      margin: 10px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Speed Dial Grid */
+    .speed-dial {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 15px;
+      width: 80%;
+      max-width: 1000px;
+    }
+
+    /* Bookmark Styling */
+    .bookmark {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 140px;
+      height: 100px;
+      background-color: #222;
+      background-size: cover;
+      background-position: center;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    /* Hover Effect */
+    .bookmark:hover {
+      transform: scale(1.1);
+      box-shadow: 0px 4px 10px rgba(209, 54, 76, 0.7);
+    }
+
+    /* Add bookmark styling */
+    .add-bookmark {
+      background: rgba(255, 255, 255, 0.1);
+      font-size: 40px;
+      color: white;
+    }
+
+    /* .game-button:hover {
+      background-color: #444;
+    } */
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+  <div class="background">
+    <div class="content">
+      <!-- Search Bar -->
+      <div class="search">
+        <input id="search-input" type="text" placeholder="Search StartPage...">
+        <button id="search-button">🔍</button>
+      </div>
+
+      <!-- Bookmarks Grid -->
+      <div class="bookmarks">
+        <!-- Bookmarks will be dynamically generated -->
+      </div>
+
+      <!-- Weather Widget -->
+      <div class="weather-widget">
+        <p><i class="fa fa-thermometer"></i> <span id="weather-text">Loading......</span></p>
+      </div>
+
+      <!-- Featured Games -->
+      <div class="featured-games">
+        <!-- Button to open the Bookmarks Menu -->
+        <button id="manage-bookmarks-button">Manage Bookmarks</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bookmarks Menu -->
+  <div id="bookmark-menu" class="modal">
+    <div class="modal-content">
+      <h3>Manage Bookmarks</h3>
+      <div id="bookmark-list">
+        <!-- List of bookmarks will be dynamically generated -->
+      </div>
+      <div class="add-bookmark">
+        <h4>Add New Bookmark</h4>
+        <label for="new-bookmark-name">Name:</label>
+        <input type="text" id="new-bookmark-name" placeholder="Bookmark Name">
+        <label for="new-bookmark-url">URL:</label>
+        <input type="url" id="new-bookmark-url" placeholder="https://example.com">
+        <button id="add-bookmark-button">Add Bookmark</button>
+      </div>
+      <br>
+      <button id="close-bookmark-menu">Close</button>
+    </div>
+  </div>
+
+  <script>
+    // Initialize bookmark data
+    const defaultBookmarks = [
+      { name: "<i class='fa-brands fa-twitch'></i> Twitch", url: "https://www.twitch.tv" },
+      { name: "<i class='fa-brands fa-youtube'></i> YouTube", url: "https://www.youtube.com" },
+      { name: "<i class='fa-brands fa-reddit'></i> Reddit", url: "https://www.reddit.com" },
+      { name: "<i class='fa-brands fa-readme'></i> IGN", url: "https://www.ign.com" },
+      { name: "<i class='fa-brands fa-steam'></i> Steam", url: "https://store.steampowered.com" },
+      { name: "<i class='fa-brands fa-apple'></i> Apple", url: "https://apple.com" },
+      { name: "<i class='fa-solid fa-pen-nib'></i> CurseForge", url: "https://curseforge.com" },
+      { name: "<i class='fa-solid fa-store'></i> G2A", url: "https://www.g2a.com" },
+      { name: "<i class='fa-brands fa-wikipedia-w'></i> Wikipedia", url: "https://www.wikipedia.org" },
+      { name: "<i class='fa-solid fa-newspaper'></i> Reuters News", url: "https://www.reuters.com" },
+      { name: "<i class='fa-solid fa-magnifying-glass'></i> StartPage", url: "https://www.startpage.com" },
+      { name: "<i class='fa-solid fa-magnifying-glass'></i> DuckDuckGo", url: "https://www.duckduckgo.com" },
+      { name: "<i class='fa-brands fa-opera'></i> GX.games - ⚠️ Tracking risk", url: "https://www.gx.games" },
+      { name: "<i class='fa-solid fa-rectangle-ad'></i> ySense - Make money online", url: "https://www.ySense.com/?r=165928756&c=mgex1qa" },
+      { name: "<i class='fa-solid fa-rectangle-ad'></i> Five Surveys - Do 5 surveys for $5  ", url: "https://fivesurveys.com/register?ref=9ba84c53-8ad1-47c8-a8cf-59337a2bf666" },
+    ];
+    const bookmarksContainer = document.querySelector(".bookmarks");
+
+    // Load bookmarks from localStorage and display them on the homepage
+    function loadData() {
+      const savedBookmarks = JSON.parse(localStorage.getItem("bookmarks"));
+      const bookmarks = savedBookmarks || defaultBookmarks;
+      bookmarks.forEach((bookmark, index) => addBookmark(bookmark, index));
+    }
+
+    // Save bookmarks to localStorage
+    function saveBookmarks(bookmarks) {
+      localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+    }
+
+    // Add a bookmark element to the homepage
+  // Add a bookmark element to the homepage
+  function addBookmark(bookmark, index) {
+    const bookmarkDiv = document.createElement("div");
+    bookmarkDiv.classList.add("bookmark");
+
+    const nameDiv = document.createElement("span");
+    nameDiv.innerHTML = bookmark.name;  // Use innerHTML to allow HTML parsing.
+    nameDiv.classList.add("bookmark-name");
+    nameDiv.addEventListener("click", () => {
+      window.location.href = bookmark.url;
+    });
+
+    bookmarkDiv.appendChild(nameDiv);
+    bookmarksContainer.appendChild(bookmarkDiv);
+  }
+
+    // Search bar functionality
+    document.getElementById("search-button").addEventListener("click", () => {
+      const query = document.getElementById("search-input").value;
+      if (query) {
+        window.location.href = `https://www.startpage.com/do/search?q=${encodeURIComponent(query)}`;
+      }
+    });
+
+    // Load bookmarks on page load
+    document.addEventListener("DOMContentLoaded", loadData);
+
+    // Manage bookmarks modal elements
+    const manageBookmarksButton = document.getElementById("manage-bookmarks-button");
+    const bookmarkMenu = document.getElementById("bookmark-menu");
+    const bookmarkList = document.getElementById("bookmark-list");
+    const addBookmarkButton = document.getElementById("add-bookmark-button");
+    const newBookmarkNameInput = document.getElementById("new-bookmark-name");
+    const newBookmarkUrlInput = document.getElementById("new-bookmark-url");
+    const closeBookmarkMenuButton = document.getElementById("close-bookmark-menu");
+
+    // Show the bookmarks menu
+    manageBookmarksButton.addEventListener("click", () => {
+      loadBookmarkList();
+      bookmarkMenu.style.display = "block";
+    });
+
+    // Close the bookmarks menu
+    closeBookmarkMenuButton.addEventListener("click", () => {
+      bookmarkMenu.style.display = "none";
+    });
+
+    // Load bookmarks into the modal list
+ function loadBookmarkList() {
+    const bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || defaultBookmarks;
+    bookmarkList.innerHTML = ""; // Clear existing list
+
+    bookmarks.forEach((bookmark, index) => {
+      const bookmarkItem = document.createElement("div");
+      bookmarkItem.classList.add("bookmark-item");
+
+      const bookmarkName = document.createElement("span");
+      bookmarkName.innerHTML = bookmark.name;  // Now parses HTML tags
+
+      const removeButton = document.createElement("button");
+      removeButton.textContent = "Remove";
+      removeButton.addEventListener("click", () => {
+        bookmarks.splice(index, 1);
+        saveBookmarks(bookmarks);
+        loadBookmarkList();         // Reload the modal list
+        reloadBookmarksDisplay();   // Reload the homepage bookmarks
+      });
+
+      bookmarkItem.appendChild(bookmarkName);
+      bookmarkItem.appendChild(removeButton);
+      bookmarkList.appendChild(bookmarkItem);
+    });
+  }
+
+    // Add a new bookmark from the modal form
+    addBookmarkButton.addEventListener("click", () => {
+      const name = newBookmarkNameInput.value;
+      const url = newBookmarkUrlInput.value;
+
+      if (name && url) {
+        const bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || defaultBookmarks;
+        bookmarks.push({ name, url });
+        saveBookmarks(bookmarks);
+        loadBookmarkList();         // Reload the modal list
+        reloadBookmarksDisplay();   // Reload the homepage bookmarks
+        newBookmarkNameInput.value = ""; // Clear inputs
+        newBookmarkUrlInput.value = "";
+      } else {
+        alert("Please provide both a name and a URL for the bookmark.");
+      }
+    });
+
+    // Reload bookmarks on the homepage
+    function reloadBookmarksDisplay() {
+      bookmarksContainer.innerHTML = ""; // Clear existing bookmarks
+      const bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || defaultBookmarks;
+      bookmarks.forEach(addBookmark);
+    }
+
+    // Weather widget functionality
+    const weatherText = document.getElementById("weather-text");
+
+    async function fetchWeather(latitude, longitude) {
+      try {
+        const response = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch weather data");
+        }
+        const data = await response.json();
+        const temperature = data.current_weather.temperature;
+        const weatherString = `${temperature}°C`;
+        weatherText.textContent = weatherString;
+        localStorage.setItem("weather", weatherString);
+        localStorage.setItem("location", JSON.stringify({ latitude, longitude }));
+      } catch (error) {
+        console.error("Error fetching weather:", error);
+        weatherText.textContent = "Weather: Unavailable";
+      }
+    }
+
+    async function getUserLocation() {
+      try {
+        const response = await fetch("http://ip-api.com/json/");
+        if (!response.ok) {
+          throw new Error("Failed to fetch location");
+        }
+        const data = await response.json();
+        const { lat, lon } = data;
+        const roundedLat = Math.round(lat * 10) / 10;
+        const roundedLon = Math.round(lon * 10) / 10;
+        fetchWeather(roundedLat, roundedLon);
+      } catch (error) {
+        console.error("Error fetching location:", error);
+        weatherText.textContent = "Weather Error: Location unavailable";
+      }
+    }
+
+    function loadWeather() {
+      const savedWeather = localStorage.getItem("weather");
+      const savedLocation = localStorage.getItem("location");
+
+      if (savedWeather && savedLocation) {
+        weatherText.textContent = savedWeather;
+      } else {
+        getUserLocation();
+      }
+    }
+
+    // Load weather on page load
+    loadWeather();
+  </script>
+</body>
+</html>
