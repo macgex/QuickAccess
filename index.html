@@ -317,7 +317,7 @@
     document.getElementById("search-button").addEventListener("click", () => {
       const query = document.getElementById("search-input").value;
       if (query) {
-        window.location.href = `https://www.duckduckgo.com/search?q=${encodeURIComponent(query)}`;
+        window.location.href = `duckduckgo.com/?t=h_&q=${encodeURIComponent(query)}`;
       }
     });
 
