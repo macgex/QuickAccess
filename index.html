@@ -214,14 +214,13 @@
       background-color: #444;
     } */
   </style>
-  <!-- Search Bar <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
 </head>
 <body>
   <div class="background">
     <div class="content">
       <!-- Search Bar -->
       <div class="search">
-        <input id="search-input" type="text" placeholder="Search StartPage...">
+        <input id="search-input" type="text" placeholder="Search DuckDuckGo">
         <button id="search-button">🔍</button>
       </div>
 
@@ -247,11 +246,13 @@
   <div id="bookmark-menu" class="modal">
     <div class="modal-content">
       <h3>Manage Bookmarks</h3>
+            <button id="close-bookmark-menu">Close</button>
+
       <div id="bookmark-list">
         <!-- List of bookmarks will be dynamically generated -->
       </div>
       <div class="add-bookmark">
-        <h4>Add New Bookmark</h4>
+        <h3>Add New Bookmark</h3>
         <label for="new-bookmark-name">Name:</label>
         <input type="text" id="new-bookmark-name" placeholder="Bookmark Name">
         <label for="new-bookmark-url">URL:</label>
@@ -259,7 +260,6 @@
         <button id="add-bookmark-button">Add Bookmark</button>
       </div>
       <br>
-      <button id="close-bookmark-menu">Close</button>
     </div>
   </div>
 
