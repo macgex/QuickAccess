@@ -214,7 +214,7 @@
       background-color: #444;
     } */
   </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!-- Search Bar <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
 </head>
 <body>
   <div class="background">
@@ -415,18 +415,18 @@
         localStorage.setItem("location", JSON.stringify({ latitude, longitude }));
       } catch (error) {
         console.error("Error fetching weather:", error);
-        weatherText.textContent = "Weather: Unavailable";
+        weatherText.textContent = "Weather error: Forecast Unavailable";
       }
     }
 
     async function getUserLocation() {
       try {
-        const response = await fetch("https://ip-api.com/json/");
+        const response = await fetch("https://get.geojs.io/v1/ip/geo.json");
         if (!response.ok) {
           throw new Error("Failed to fetch location");
         }
         const data = await response.json();
-        const { lat, lon } = data;
+        const { latitude, longitude } = data;
         const roundedLat = Math.round(lat * 10) / 10;
         const roundedLon = Math.round(lon * 10) / 10;
         fetchWeather(roundedLat, roundedLon);
